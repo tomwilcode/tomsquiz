@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tom's Quiz</title>
+  <link rel="stylesheet" href="style.css" >
+</head>
+<body>
+  <div class="container">
+    <div id="intro" class="intro">
+      <h1>Welcome to Tom's Quiz!</h1>
+      <p>Test your General Knowledge. Each correct answer gives you 1 point.</p>
+      <p>Navagate through the quiz by clicking on the Start Quiz button and then using the Next button after you have answered each question.</p>
+      <p>After each question is answered the explanation of the correct answer will be displayed.</p>
+      <p>At the end of the quiz you will see the total of correct answers you answered.</p>
+      <p>The questions will always load randomly when the quiz is refreshed or restarted.</p>
+      <p>See if you can get 23 out of 23 answers right!</p>
+      <p>Good luck!</p>
+      <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+    </div>
+
+    <div id="quiz" class="quiz hidden">
+      <div id="questionBox">
+        <ul id="answerList"></ul>
+        <p id="explanation" class="hidden"></p>
+        <button id="nextBtn" class="hidden" onclick="nextQuestion()">Next</button>
+      </div>
+    </div>
+
+    <div id="result" class="result hidden">
+      <h2>Quiz Finished!</h2>
+      <p id="scoreText"></p>
+      <button onclick="location.reload()">Restart</button>
+  </div>
+
+  <script src="script.js"></script>
+  <footer>
+  <p style = "color:white;">Copyright &copy; 2025 Tom Wilson - All Rights Reserved.</p>
+</footer>
+</body>
+</html>
