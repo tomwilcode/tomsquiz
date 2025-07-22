@@ -1,5 +1,3 @@
-/* eslint-env browser */
-/* eslint-disable no-undef, no-use-before-define, no-plusplus, no-param-reassign, max-len */
 "use strict";
 // === Quiz Questions & Answers ===
 const quizQuestions = [
