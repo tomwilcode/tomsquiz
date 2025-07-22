@@ -150,7 +150,7 @@ const quizQuestions = [
   },
 ];
 
-// === Quiz State added ===
+// === Quiz State ===
 let currentQuestionIndex = 0;
 let score = 0;
 let shuffledQuestions = [];
@@ -168,7 +168,7 @@ let restartButton = null;
 
 // Error handling for missing DOM elements
 if (!introSection || !quizSection || !resultSection || !questionText || !answerList || !explanationBox || !nextButton || !scoreText) {
-  throw new Error("One or more required DOM elements are missing. Please check your HTML structure.");
+  throw new Error;
 }
 
 // === Start Quiz ===
@@ -198,7 +198,7 @@ function showQuestion() {
   questionText.textContent = question || "No question provided";
   answerList.innerHTML = "";
 
-  // Accessibility: Use button elements and ARIA roles
+  // Accessibility:
   options.forEach((option, index) => {
     const btn = document.createElement("button");
     btn.textContent = option;
@@ -215,8 +215,8 @@ function showQuestion() {
   explanationBox.classList.add("hidden");
   nextButton.classList.add("hidden");
 
-  // Show explanation if question was already answered (e.g., user navigates back)
-  // Not needed for this quiz, but placeholder for future features
+  // Show explanation if question was already answered
+
 }
 
 // === Handle Answer Selection ===
@@ -253,7 +253,6 @@ function nextQuestion() {
   currentQuestionIndex++;
   if (currentQuestionIndex < shuffledQuestions.length) {
     showQuestion();
-    // Show explanation for the new question if needed (not typical, but for completeness)
     // explanationBox.textContent = `Explanation: ${shuffledQuestions[currentQuestionIndex].explanation}`;
     // explanationBox.classList.remove("hidden");
   } else {
@@ -270,7 +269,6 @@ function showResult() {
   resultSection.classList.remove("hidden");
   scoreText.textContent = `You scored ${score} out of ${shuffledQuestions.length}`;
 
-  // Always add Restart button (remove previous if exists)
   if (restartButton) {
     restartButton.remove();
     restartButton = null;
@@ -284,9 +282,7 @@ function showResult() {
 }
 
 // === Event Listeners ===
-/**
- * Sets up event listeners on DOMContentLoaded.
- */
+
 document.addEventListener("DOMContentLoaded", () => {
   const startBtn = document.getElementById("startBtn");
   if (!startBtn) throw new Error("Start button not found in DOM.");
