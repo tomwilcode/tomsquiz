@@ -214,9 +214,6 @@ function showQuestion() {
 
   explanationBox.classList.add("hidden");
   nextButton.classList.add("hidden");
-
-  // Show explanation if question was already answered
-
 }
 
 // === Handle Answer Selection ===
