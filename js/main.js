@@ -1,3 +1,6 @@
+/* eslint-env browser */
+/* eslint-disable no-undef, no-use-before-define, no-plusplus, no-param-reassign, max-len */
+"use strict";
 // === Quiz Questions & Answers ===
 const quizQuestions = [
   {
@@ -163,20 +166,33 @@ const answerList = document.getElementById("answerList");
 const explanationBox = document.getElementById("explanation");
 const nextButton = document.getElementById("nextBtn");
 const scoreText = document.getElementById("scoreText");
+let restartButton = null;
+
+// Error handling for missing DOM elements
+if (!introSection || !quizSection || !resultSection || !questionText || !answerList || !explanationBox || !nextButton || !scoreText) {
+  throw new Error("One or more required DOM elements are missing. Please check your HTML structure.");
+}
 
 // === Start Quiz ===
+/**
+ * Starts the quiz, resets state, and displays the first question.
+ */
 function startQuiz() {
   currentQuestionIndex = 0;
   score = 0;
   shuffledQuestions = [...quizQuestions].sort(() => Math.random() - 0.5);
 
   introSection.classList.add("hidden");
+  resultSection.classList.add("hidden");
   quizSection.classList.remove("hidden");
 
   showQuestion();
 }
 
 // === Display a Question ===
+/**
+ * Displays the current question and answer options.
+ */
 function showQuestion() {
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   const { question, options } = currentQuestion;
@@ -184,30 +200,42 @@ function showQuestion() {
   questionText.textContent = question || "No question provided";
   answerList.innerHTML = "";
 
+  // Accessibility: Use button elements and ARIA roles
   options.forEach((option, index) => {
-    const listItem = document.createElement("li");
-    listItem.textContent = option;
-    listItem.classList.add("answer-option");
-    listItem.addEventListener("click", () => handleAnswer(index));
-    answerList.appendChild(listItem);
+    const btn = document.createElement("button");
+    btn.textContent = option;
+    btn.className = "answer-option";
+    btn.setAttribute("tabindex", "0");
+    btn.setAttribute("role", "button");
+    btn.setAttribute("aria-label", option);
+    btn.dataset.index = index;
+    btn.style.backgroundColor = "";
+    btn.disabled = false;
+    answerList.appendChild(btn);
   });
 
   explanationBox.classList.add("hidden");
   nextButton.classList.add("hidden");
+
+  // Show explanation if question was already answered (e.g., user navigates back)
+  // Not needed for this quiz, but placeholder for future features
 }
 
 // === Handle Answer Selection ===
+/**
+ * Handles answer selection, disables options, and shows explanation.
+ * @param {number} selectedIndex - Index of selected answer
+ */
 function handleAnswer(selectedIndex) {
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
-  const correctIndex = typeof currentQuestion.correct === "number" 
-    ? currentQuestion.correct 
-    : parseInt(currentQuestion.correct);
+  const correctIndex = typeof currentQuestion.correct === "number"
+    ? currentQuestion.correct
+    : parseInt(currentQuestion.correct, 10);
 
-  const allOptions = document.querySelectorAll("#answerList li");
-
-  allOptions.forEach((item, index) => {
-    item.style.pointerEvents = "none";
-    item.style.backgroundColor = index === correctIndex ? "#c8e6c9" : "#ffcdd2";
+  const allOptions = document.querySelectorAll("#answerList .answer-option");
+  allOptions.forEach((btn, index) => {
+    btn.disabled = true;
+    btn.style.backgroundColor = index === correctIndex ? "#c8e6c9" : "#ffcdd2";
   });
 
   if (selectedIndex === correctIndex) {
@@ -220,24 +248,55 @@ function handleAnswer(selectedIndex) {
 }
 
 // === Move to Next Question ===
+/**
+ * Moves to the next question or shows the result if finished.
+ */
 function nextQuestion() {
   currentQuestionIndex++;
   if (currentQuestionIndex < shuffledQuestions.length) {
     showQuestion();
+    // Show explanation for the new question if needed (not typical, but for completeness)
+    // explanationBox.textContent = `Explanation: ${shuffledQuestions[currentQuestionIndex].explanation}`;
+    // explanationBox.classList.remove("hidden");
   } else {
     showResult();
   }
 }
 
 // === Show Final Result ===
+/**
+ * Shows the final result and provides a restart button.
+ */
 function showResult() {
   quizSection.classList.add("hidden");
   resultSection.classList.remove("hidden");
   scoreText.textContent = `You scored ${score} out of ${shuffledQuestions.length}`;
+
+  // Always add Restart button (remove previous if exists)
+  if (restartButton) {
+    restartButton.remove();
+    restartButton = null;
+  }
+  restartButton = document.createElement("button");
+  restartButton.textContent = "Restart Quiz";
+  restartButton.className = "restart-btn";
+  restartButton.setAttribute("aria-label", "Restart Quiz");
+  restartButton.addEventListener("click", startQuiz);
+  resultSection.appendChild(restartButton);
 }
 
-// === Attach Start Event on Page Load ===
+// === Event Listeners ===
+/**
+ * Sets up event listeners on DOMContentLoaded.
+ */
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("startBtn").addEventListener("click", startQuiz);
+  const startBtn = document.getElementById("startBtn");
+  if (!startBtn) throw new Error("Start button not found in DOM.");
+  startBtn.addEventListener("click", startQuiz);
   nextButton.addEventListener("click", nextQuestion);
+  answerList.addEventListener("click", (e) => {
+    if (e.target && e.target.classList.contains("answer-option") && !e.target.disabled) {
+      handleAnswer(Number(e.target.dataset.index));
+    }
+  });
 });

@@ -2,39 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" >
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=yes">
+  <meta name="description" content="Test your general knowledge with Tom's Quiz! Randomized questions, instant feedback, and a fun challenge.">
   <title>Tom's Quiz</title>
   <link rel="stylesheet" href="styles.css" >
 </head>
+
 <body>
-  <div class="container">
-    <div id="intro" class="intro">
+  
+  <main id="mainContent" class="container">
+    <section id="intro" class="intro" aria-label="Quiz Introduction">
       <h1>Welcome to Tom's Quiz!</h1>
       <p>Test your General Knowledge. Each correct answer gives you 1 point.</p>
-      <p>Navagate through the quiz by clicking on the Start Quiz button and then using the Next button after you have answered each question.</p>
-      <p>After each question is answered the explanation of the correct answer will be displayed.</p>
-      <p>At the end of the quiz you will see the total of correct answers you answered.</p>
+      <p>Navigate through the quiz by clicking on the Start Quiz button and then using the Next button after you have answered each question.</p>
+      <p>After each question is answered, the explanation of the correct answer will be displayed.</p>
+      <p>At the end of the quiz, you will see your total correct answers.</p>
       <p>The questions will always load randomly when the quiz is refreshed or restarted.</p>
       <p>See if you can get 23 out of 23 answers right!</p>
       <p>Good luck!</p>
-      <button onclick="startQuiz()">Start Quiz</button>
-    </div>
-    </div>
+      <button type="button" id="startBtn">Start Quiz</button>
+    </section>
 
-    <div id="quiz" class="quiz hidden">
+
+    <section id="quiz" class="quiz hidden" aria-label="Quiz Section">
       <div id="questionBox">
+        <h2 id="questionText" aria-live="polite"><span class="visually-hidden">Question: </span></h2>
         <ul id="answerList"></ul>
-        <p id="explanation" class="hidden"></p>
-        <button id="nextBtn" class="hidden" onclick="nextQuestion()">Next</button>
+        <p id="explanation" class="hidden" aria-live="polite"></p>
+        <button type="button" id="nextBtn" class="hidden">Next</button>
       </div>
-    </div>
+    </section>
 
-    <div id="result" class="result hidden">
+
+    <section id="result" class="result hidden" aria-label="Quiz Result">
       <h2>Quiz Finished!</h2>
-      <p id="scoreText"></p>
-      <button onclick="location.reload()">Restart</button>
-  </div>
+      <p id="scoreText" aria-live="polite"></p>
+      <!-- Restart button is dynamically added by JavaScript -->
+    </section>
 
   <script src="main.js"></script>
+</main>
 </body>
 </html>
