@@ -230,6 +230,7 @@ function handleAnswer(selectedIndex) {
   const allOptions = document.querySelectorAll("#answerList .answer-option");
   allOptions.forEach((btn, index) => {
     btn.disabled = true;
+    // Green background for correct answer, red for incorrect
     btn.style.backgroundColor = index === correctIndex ? "#c8e6c9" : "#ffcdd2";
   });
 
