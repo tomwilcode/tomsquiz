@@ -1,5 +1,16 @@
 "use strict";
+
+/**
+ * Online Quiz App
+ * Author: [Tom Wilson]
+ * Description: Accessible, industry-standard quiz app JS.
+ */
 // === Quiz Questions & Answers ===
+/**
+ * Array of quiz questions and answers.
+ * @type {Array<{question: string, options: string[], correct: number,
+ * correct: number, explanation: string, type?: string}>}
+ */
 const quizQuestions = [
   {
     question: "The last empress of India died in 2002 in Windsor. Who was she?",
@@ -155,87 +166,65 @@ let currentQuestionIndex = 0;
 let score = 0;
 let shuffledQuestions = [];
 
+
 // === DOM Elements ===
-const introSection = document.getElementById("intro");
-const quizSection = document.getElementById("quiz");
-const resultSection = document.getElementById("result");
-const questionText = document.getElementById("questionText");
-const answerList = document.getElementById("answerList");
-const explanationBox = document.getElementById("explanation");
-const nextButton = document.getElementById("nextBtn");
-const scoreText = document.getElementById("scoreText");
+// Use a local getElement function to avoid 'document is not defined' in some environments
+/**
+ * Get DOM element by ID, throw error if not found.
+ * @param {string} id
+ * @returns {HTMLElement}
+ */
+
+function getElementById(id) {
+  if (typeof document === 'undefined') {
+    throw new Error('document is not defined. This code must run in a browser environment.');
+  }
+  const el = document.getElementById(id);
+  if (!el) {
+    throw new Error(`Element with id '${id}' not found in DOM.`);
+  }
+  return el;
+}
+
+
+
+const introSection = getElementById("intro");
+const quizSection = getElementById("quiz");
+const resultSection = getElementById("result");
+const questionText = getElementById("questionText");
+const answerList = getElementById("answerList");
+const explanationBox = getElementById("explanation");
+const nextButton = getElementById("nextBtn");
+const scoreText = getElementById("scoreText");
 let restartButton = null;
 
-// Error handling for missing DOM elements
-if (!introSection || !quizSection || !resultSection || !questionText || !answerList || !explanationBox || !nextButton || !scoreText) {
-  throw new Error;
-}
 
-// === Start Quiz ===
-/**
- * Starts the quiz, resets state, and displays the first question.
- */
-function startQuiz() {
-  currentQuestionIndex = 0;
-  score = 0;
-  shuffledQuestions = [...quizQuestions].sort(() => Math.random() - 0.5);
-
-  introSection.classList.add("hidden");
-  resultSection.classList.add("hidden");
-  quizSection.classList.remove("hidden");
-
-  showQuestion();
-}
 
 // === Display a Question ===
 /**
  * Displays the current question and answer options.
  */
-function showQuestion() {
-  const currentQuestion = shuffledQuestions[currentQuestionIndex];
-  const { question, options } = currentQuestion;
 
-  questionText.textContent = question || "No question provided";
-  answerList.innerHTML = "";
 
-  // Accessibility:
-  options.forEach((option, index) => {
-    const btn = document.createElement("button");
-    btn.textContent = option;
-    btn.className = "answer-option";
-    btn.setAttribute("tabindex", "0");
-    btn.setAttribute("role", "button");
-    btn.setAttribute("aria-label", option);
-    btn.dataset.index = index;
-    btn.style.backgroundColor = "";
-    btn.disabled = false;
-    answerList.appendChild(btn);
-  });
-
-  explanationBox.classList.add("hidden");
-  nextButton.classList.add("hidden");
-}
-
-// === Handle Answer Selection ===
-/**
- * Handles answer selection, disables options, and shows explanation.
- * @param {number} selectedIndex - Index of selected answer
- */
 function handleAnswer(selectedIndex) {
+  if (typeof document === 'undefined') {
+    throw new Error('document is not defined. This code must run in a browser environment.');
+  }
   const currentQuestion = shuffledQuestions[currentQuestionIndex];
   const correctIndex = typeof currentQuestion.correct === "number"
     ? currentQuestion.correct
     : parseInt(currentQuestion.correct, 10);
 
   const allOptions = document.querySelectorAll("#answerList .answer-option");
-  allOptions.forEach((btn, index) => {
+  allOptions.forEach((btn, idx) => {
+    // Avoid parameter reassignment
     btn.disabled = true;
-    // Green background for correct answer, red for incorrect
-    btn.style.backgroundColor = index === correctIndex ? "#c8e6c9" : "#ffcdd2";
+    btn.style.backgroundColor = idx === correctIndex ? "#c8e6c9" : "#ffcdd2";
+    btn.setAttribute("aria-pressed", idx === selectedIndex ? "true" : "false");
   });
 
   if (selectedIndex === correctIndex) {
-    score++;
+    score += 1;
   }
 
   explanationBox.textContent = `Explanation: ${currentQuestion.explanation}`;
@@ -243,29 +232,15 @@ function handleAnswer(selectedIndex) {
   nextButton.classList.remove("hidden");
 }
 
-// === Move to Next Question ===
-/**
- * Moves to the next question or shows the result if finished.
- */
-function nextQuestion() {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < shuffledQuestions.length) {
-    showQuestion();
-    // explanationBox.textContent = `Explanation: ${shuffledQuestions[currentQuestionIndex].explanation}`;
-    // explanationBox.classList.remove("hidden");
-  } else {
-    showResult();
-  }
-}
 
-// === Show Final Result ===
-/**
- * Shows the final result and provides a restart button.
- */
 function showResult() {
+  if (typeof document === 'undefined') {
+    throw new Error('document is not defined. This code must run in a browser environment.');
+  }
   quizSection.classList.add("hidden");
   resultSection.classList.remove("hidden");
-  scoreText.textContent = `You scored ${score} out of ${shuffledQuestions.length}`;
+  scoreText.textContent =
+    `You scored ${score} out of ${shuffledQuestions.length}`;
 
   if (restartButton) {
     restartButton.remove();
@@ -279,16 +254,92 @@ function showResult() {
   resultSection.appendChild(restartButton);
 }
 
+
+function showQuestion() {
+  if (typeof document === 'undefined') {
+    throw new Error('document is not defined. This code must run in a browser environment.');
+  }
+  const currentQuestion = shuffledQuestions[currentQuestionIndex];
+  const { question, options } = currentQuestion;
+
+  questionText.textContent = question || "No question provided";
+  answerList.innerHTML = "";
+
+  // Accessibility: Use button elements, ARIA, and focus management
+  options.forEach((option, idx) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = option;
+    btn.className = "answer-option";
+    btn.setAttribute("tabindex", "0");
+    btn.setAttribute("role", "button");
+    btn.setAttribute("aria-label", option);
+    btn.dataset.index = idx;
+    btn.style.backgroundColor = "";
+    btn.disabled = false;
+    btn.addEventListener("keydown", function handleKey(e) {
+      if ((e.key === "Enter" || e.key === " ") && !btn.disabled) {
+        handleAnswer(idx);
+      }
+    });
+    answerList.appendChild(btn);
+  });
+
+  explanationBox.classList.add("hidden");
+  nextButton.classList.add("hidden");
+}
+
+
+function startQuiz() {
+  currentQuestionIndex = 0;
+  score = 0;
+  shuffledQuestions = [...quizQuestions].sort(() => Math.random() - 0.5);
+
+  introSection.classList.add("hidden");
+  resultSection.classList.add("hidden");
+  quizSection.classList.remove("hidden");
+
+  showQuestion();
+}
+
+// === Answer Selection ===
+/**
+ * Handles answer selection, disables options, and shows explanation.
+ * @param {number} selectedIndex - Index of selected answer
+ */
+// ...moved above...
+
+
+function nextQuestion() {
+  currentQuestionIndex += 1;
+  if (currentQuestionIndex < shuffledQuestions.length) {
+    showQuestion();
+    // explanationBox.textContent = `Explanation: ${shuffledQuestions[currentQuestionIndex].explanation}`;
+    // explanationBox.classList.remove("hidden");
+  } else {
+    showResult();
+  }
+}
+
+// === Show Final Result ===
+// ...moved above...
+
 // === Event Listeners ===
 
-document.addEventListener("DOMContentLoaded", () => {
-  const startBtn = document.getElementById("startBtn");
-  if (!startBtn) throw new Error("Start button not found in DOM.");
-  startBtn.addEventListener("click", startQuiz);
-  nextButton.addEventListener("click", nextQuestion);
-  answerList.addEventListener("click", (e) => {
-    if (e.target && e.target.classList.contains("answer-option") && !e.target.disabled) {
-      handleAnswer(Number(e.target.dataset.index));
-    }
+
+if (typeof document !== 'undefined') {
+  document.addEventListener("DOMContentLoaded", function domReadyHandler() {
+    const startBtn = getElementById("startBtn");
+    startBtn.addEventListener("click", startQuiz);
+    nextButton.addEventListener("click", nextQuestion);
+    answerList.addEventListener("click", function answerClickHandler(e) {
+      if (
+        e.target &&
+        e.target.classList.contains("answer-option") &&
+        !e.target.disabled
+      ) {
+        handleAnswer(Number(e.target.dataset.index));
+      }
+    });
   });
-});
+}

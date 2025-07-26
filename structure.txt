@@ -1,5 +1,5 @@
 quiz-app/
 ├── index.html
 ├── style.css
-├── script.js
+├── main.js
 └── README.md
