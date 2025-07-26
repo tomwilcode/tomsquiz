@@ -31,3 +31,14 @@ Below are some screenshots of Tom's Quiz in action:
 - `css/styles.css` - Stylesheet
 - `js/main.js` - Quiz logic
 - `assets/` - Images and other assets
+
+## Code Validation
+
+![HTML Validation Screen](assets/html-valadtion.png)
+HTML Validation - No Errors
+
+![CSS Validation Screen](assets/css-validation.png)
+CSS Validation - No Errors
+
+![JavaScript Validation Screen](assets/javascript-valadation.png)
+JavaScript Validation - No Errors
